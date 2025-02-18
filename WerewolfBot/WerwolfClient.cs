@@ -1,5 +1,0 @@
-﻿namespace WerewolfBot;
-
-class WerwolfClient
-{
-}
