@@ -1,4 +1,5 @@
-﻿using WerewolfBot.Objects.Interfaces;
+﻿using Discord;
+using WerewolfBot.Objects.Interfaces;
 
 namespace WerewolfBot.Objects;
 
@@ -33,6 +34,11 @@ class Game
     IGamePhase currentGamePhase;
 
     /// <summary>
+    /// The Text-Channel associated with this Game.
+    /// </summary>
+    IGuildChannel textChannel;
+
+    /// <summary>
     /// Creates a new <see cref="Game"/> instance
     /// </summary>
     /// <param name="_settings">The <see cref="GameSettings"> that should be used for this instance.</see></param>
@@ -46,6 +52,14 @@ class Game
     /// Starts the <see cref="Game"/> instance.
     /// </summary>
     public void Start()
+    {
+
+    }
+
+    /// <summary>
+    /// Abandones the Game while notifying Players.
+    /// </summary>
+    public void Abandone()
     {
 
     }
