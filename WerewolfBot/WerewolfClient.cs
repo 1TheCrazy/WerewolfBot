@@ -3,7 +3,6 @@ using Discord.Audio;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Input;
 
 namespace WerewolfBot;
 
@@ -11,7 +10,7 @@ class WerewolfClient
 {
     private DiscordSocketClient client;
     private IServiceProvider services;
-    private InteractionService commands;
+    private InteractionService interactionService;
 
     public static Objects.Game? currentGame;
 
@@ -24,10 +23,10 @@ class WerewolfClient
         token = botToken;
         
         client = new();
-        commands = new InteractionService(client);
-        services = new ServiceCollection().BuildServiceProvider();
+        interactionService = new InteractionService(client);
+        services = new ServiceCollection()
+            .BuildServiceProvider();
 
-        
         client.Log += Log;
         client.Ready += RegisterCommandsAsync;
         client.InteractionCreated += HandleInteractionAsync;
@@ -51,19 +50,19 @@ class WerewolfClient
     private async Task RegisterCommandsAsync()
     {
         // Finds Modules in all Files and loads them here
-        await commands.AddModulesAsync(typeof(Program).Assembly, services);
+        await interactionService.AddModulesAsync(typeof(Program).Assembly, services);
         //await commands.RegisterCommandsGloballyAsync();
         //await UnregisterGlobalCommands();
 
         // For faster testing
         await UnregisterGuildCommands();
-        await commands.RegisterCommandsToGuildAsync(1341472914624483460);
+        await interactionService.RegisterCommandsToGuildAsync(1341472914624483460);
     }
 
     private async Task HandleInteractionAsync(SocketInteraction interaction)
     {
         var ctx = new SocketInteractionContext(client, interaction);
-        await commands.ExecuteCommandAsync(ctx, services);
+        await interactionService.ExecuteCommandAsync(ctx, services);
     }
 
     private async Task UnregisterGuildCommands()
