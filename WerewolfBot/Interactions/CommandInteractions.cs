@@ -2,7 +2,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace WerewolfBot.Objects.Commands;
+namespace WerewolfBot.Interactions;
 
 public class CommandInteractions : InteractionModuleBase<SocketInteractionContext>
 {

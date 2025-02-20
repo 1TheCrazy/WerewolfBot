@@ -35,9 +35,19 @@ class GameSettings
     bool textNarration;
 
     /// <summary>
-    /// Specify wether the auto-assingment of 
+    /// Specify wether the auto-assingment of Cards should prefer that cards that wake up at night should be preferenced (Auto-Assignment is activated once all cards are allowed)
     /// </summary>
     bool preferActionCards;
+
+    /// <summary>
+    /// Specify wether cards should be revealed on death
+    /// </summary>
+    bool reavealCardsOnDeath;
+
+    /// <summary>
+    /// The number of Werewolfs (if set to -1 the number will be set to n/3)
+    /// </summary>
+    int numberOfWerewolfs;
 
     /// <summary>
     /// Create a new <see cref="GameSettings"/> instance.

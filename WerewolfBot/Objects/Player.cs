@@ -33,6 +33,8 @@ class Player
         onKilled?.Invoke();
     }
 
+
+
     public Player(IGuildUser _discordUser, ICard _card)
     {
         discordUser = _discordUser;

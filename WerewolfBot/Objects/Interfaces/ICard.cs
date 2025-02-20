@@ -34,5 +34,5 @@ interface ICard
     /// <summary>
     /// The <see cref="Action"/> of this card.
     /// </summary>
-    public IAction Action { get; set; }
+    public IAction Action { get; set; } 
 }

@@ -1,8 +1,8 @@
 ﻿using WerewolfBot.Objects.Interfaces;
 
-namespace WerewolfBot.Objects;
+namespace WerewolfBot.Objects.Play;
 
-class Day : IGamePhase
+class Night : IGamePhase
 {
     public List<Player> KillQueue { get; set; }
 

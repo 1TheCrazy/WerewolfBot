@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
 
-namespace WerewolfBot.Objects.Commands;
+namespace WerewolfBot.Interactions;
 
 /// <summary>
 /// A class for handling all button interactions with the bot
@@ -16,8 +16,7 @@ public class ButtonInteractions: InteractionModuleBase<SocketInteractionContext>
     [ComponentInteraction("start_current_game")]
     public async Task HandleStartGame()
     {
-        Console.WriteLine("butotn clicked");
-        await RespondAsync("fuck");
+
     }
 
     [ComponentInteraction("upload_current_game_settings")]

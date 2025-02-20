@@ -2,7 +2,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace WerewolfBot.Objects.Commands;
+namespace WerewolfBot.Interactions;
 class InteractionResolver
 {
     public static async Task Abandone(SocketInteractionContext ctx)
