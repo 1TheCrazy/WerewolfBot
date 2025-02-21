@@ -47,12 +47,16 @@ class Game
     /// </summary>
     public IAudioClient currentVoiceConnection;
 
+    public bool isRunning { get; private set; }
+
     /// <summary>
     /// Creates a new <see cref="Game"/> instance
     /// </summary>
     public Game()
     {
         settings = GameSettings.DefaultSettings;
+
+        isRunning = false;
     }
 
     /// <summary>
@@ -60,6 +64,8 @@ class Game
     /// </summary>
     public void Start()
     {
+        isRunning = true;
+
         // Correct number of werewolfs.
     }
 
@@ -76,12 +82,12 @@ class Game
     {
         var connection = currentVoiceConnection.CreateDirectOpusStream();
 
-        byte[] silenceFrame = new byte[] { 0xF8, 0xFF, 0xFE }; // 48kHz Opus silence frame
+        byte[] silenceFrame = { 0xF8, 0xFF, 0xFE }; // 48kHz Opus silence frame
 
         while (currentVoiceConnection.ConnectionState == ConnectionState.Connected)
         {
             await connection.WriteAsync(silenceFrame, 0, silenceFrame.Length); // Send silence
-            await Task.Delay(20); // Opus packets are ~20ms apart
+            await Task.Delay(10000); // Delay for 10s, to not spam anything
         }
     }
 }

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Text;
 using System.Threading;
 using WerewolfBot.Objects;
@@ -65,10 +66,15 @@ class InteractionResolver
 
     public static async Task UploadSettingsPrompt(SocketInteractionContext ctx)
     {
-        // Safety check
+        // Safety checks
         if(WerewolfClient.currentGame is null)
         {
             await ctx.Interaction.RespondAsync($"❌ There is no ongoing game to attach settings to!", ephemeral: true);
+            return;
+        }
+        if (WerewolfClient.currentGame.isRunning)
+        {
+            await ctx.Interaction.RespondAsync($"❌ The current game is running, therefore the settings cannot be changed!", ephemeral: true);
             return;
         }
 
@@ -110,9 +116,6 @@ class InteractionResolver
         // Check for conversion erros before notifying everyone
         var attachment = result.Attachments.First();
 
-        // Delete the message to keep chat clean
-        await result.DeleteAsync();
-
         if (!attachment.Filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
         {
             await ctx.Interaction.FollowupAsync($"❌ You did not upload a valid JSON.", ephemeral: true);
@@ -127,7 +130,7 @@ class InteractionResolver
             {
                 json = await httpClient.GetStringAsync(attachment.Url);
             }
-
+            Console.WriteLine(json);
             GameSettings settings = JsonConvert.DeserializeObject<GameSettings>(json)??throw new Exception("Conversion returned null.");
 
             WerewolfClient.currentGame.settings = settings;
@@ -138,7 +141,52 @@ class InteractionResolver
             return;
         }
 
+        // Delete the message to keep chat clean
+        await result.DeleteAsync();
+
         await ctx.Interaction.FollowupAsync($"✅ **{ctx.User.Username}** uploaded some settings that will be used!");
+    }
+
+    public static async Task UploadSettingsCmd(SocketInteractionContext ctx, IAttachment file)
+    {
+        // Safety checks
+        if (WerewolfClient.currentGame is null)
+        {
+            await ctx.Interaction.RespondAsync($"❌ There is no ongoing game to attach settings to!", ephemeral: true);
+            return;
+        }
+        if (WerewolfClient.currentGame.isRunning)
+        {
+            await ctx.Interaction.RespondAsync($"❌ The current game is running, therefore the settings cannot be changed!", ephemeral: true);
+            return;
+        }
+
+        if (!file.Filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+        {
+            await ctx.Interaction.RespondAsync($"❌ You did not upload a valid JSON.", ephemeral: true);
+            return;
+        }
+
+        // Get content and convert
+        try
+        {
+            string json = "";
+            using (HttpClient httpClient = new())
+            {
+                json = await httpClient.GetStringAsync(file.Url);
+            }
+            Console.WriteLine(json);
+            GameSettings settings = JsonConvert.DeserializeObject<GameSettings>(json) ?? throw new Exception("Conversion returned null.");
+
+            WerewolfClient.currentGame.settings = settings;
+        }
+        catch
+        {
+            await ctx.Interaction.RespondAsync($"❌ JSON was invalid.", ephemeral: true);
+            return;
+        }
+
+        await ctx.Interaction.RespondAsync($"✅ **{ctx.User.Username}** uploaded some settings that will be used!");
     }
 
     public static async Task DownloadSettings(SocketInteractionContext ctx)

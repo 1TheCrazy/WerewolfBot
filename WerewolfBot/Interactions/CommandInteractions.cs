@@ -17,4 +17,16 @@ public class CommandInteractions : InteractionModuleBase<SocketInteractionContex
     {
         await InteractionResolver.Abandone(Context);
     }
+
+    [SlashCommand("downloadsettings", "Dowanlods the settings of the current game in a JSON format.")]
+    public async Task DownloadSettings()
+    {
+        await InteractionResolver.DownloadSettings(Context);
+    }
+
+    [SlashCommand("uploadsettings", "Uploads settings in a JSON format to be used in the current game.")]
+    public async Task UploadSettings([Summary("json", "Upload a JSON file containing the settings to be used.")] IAttachment file)
+    {
+        await InteractionResolver.UploadSettingsCmd(Context, file);
+    }
 }
