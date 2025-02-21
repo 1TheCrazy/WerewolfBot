@@ -1,6 +1,6 @@
 ﻿// Invite Link for the Bot
 // https://discord.com/oauth2/authorize?client_id=1341465385911844875&permissions=621217698021184&integration_type=0&scope=bot
-
+// https://discord.com/oauth2/authorize?client_id=1341465385911844875
 // Main Entry Point for the Program
 using WerewolfBot;
 

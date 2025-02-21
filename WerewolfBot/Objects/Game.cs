@@ -1,4 +1,7 @@
 ﻿using Discord;
+using Discord.Audio;
+using Discord.WebSocket;
+using System.Reflection;
 using WerewolfBot.Objects.Interfaces;
 using WerewolfBot.Objects.Play;
 
@@ -12,7 +15,7 @@ class Game
     /// <summary>
     /// The <see cref="GameSettings"/> of the game.
     /// </summary>
-    public GameSettings Settings { get; private set; }
+    public GameSettings settings;
 
     /// <summary>
     /// A <see cref="List{T}"/> of <see cref="Player"/> that are participating in this game.
@@ -22,31 +25,34 @@ class Game
     /// <summary>
     /// A <see cref="List{T}"/> of <see cref="Night"/> representing the nights that have passed.
     /// </summary>
-    List<Night> passedNights;
-    
+    public List<Night> passedNights;
+
     /// <summary>
     /// A <see cref="List{T}"/> of <see cref="Night"/> representing the days that have passed.
     /// </summary>
-    List<Day> passedDays;
+    public List<Day> passedDays;
 
     /// <summary>
     /// The current game-phase.
     /// </summary>
-    IGamePhase currentGamePhase;
+    public IGamePhase currentGamePhase;
 
     /// <summary>
     /// The Text-Channel associated with this Game.
     /// </summary>
-    IGuildChannel textChannel;
+    public IGuildChannel textChannel;
+
+    /// <summary>
+    /// The <see cref="IAudioClient"/> representing a connection to the Audio-Channel associated with this game.
+    /// </summary>
+    public IAudioClient currentVoiceConnection;
 
     /// <summary>
     /// Creates a new <see cref="Game"/> instance
     /// </summary>
-    /// <param name="_settings">The <see cref="GameSettings"> that should be used for this instance.</see></param>
-    public Game(GameSettings _settings, List<Player> _players)
+    public Game()
     {
-        Settings = _settings;
-        players = _players;
+        settings = GameSettings.DefaultSettings;
     }
 
     /// <summary>
@@ -54,14 +60,28 @@ class Game
     /// </summary>
     public void Start()
     {
-
+        // Correct number of werewolfs.
     }
 
     /// <summary>
     /// Abandones the Game while notifying Players.
     /// </summary>
-    public void Abandone()
+    public void Abandone(SocketUser user)
     {
 
+    }
+
+    // Keep the audio connection alive
+    public async Task KeepAudioAlive()
+    {
+        var connection = currentVoiceConnection.CreateDirectOpusStream();
+
+        byte[] silenceFrame = new byte[] { 0xF8, 0xFF, 0xFE }; // 48kHz Opus silence frame
+
+        while (currentVoiceConnection.ConnectionState == ConnectionState.Connected)
+        {
+            await connection.WriteAsync(silenceFrame, 0, silenceFrame.Length); // Send silence
+            await Task.Delay(20); // Opus packets are ~20ms apart
+        }
     }
 }

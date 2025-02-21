@@ -1,4 +1,6 @@
-﻿namespace WerewolfBot.Objects.Interfaces;
+﻿using WerewolfBot.Objects.Play;
+
+namespace WerewolfBot.Objects.Interfaces;
 /// <summary>
 /// The contract for a card.
 /// </summary>
@@ -34,5 +36,10 @@ interface ICard
     /// <summary>
     /// The <see cref="Action"/> of this card.
     /// </summary>
-    public IAction Action { get; set; } 
+    public IAction Action { get; set; }
+
+    /// <summary>
+    /// A <see cref="WinningTeam"/> representing the team this <see cref="ICard"/> wins with by default. This can be changed.
+    /// </summary>
+    public WinningTeam DefaultTeam { get; set; }
 }

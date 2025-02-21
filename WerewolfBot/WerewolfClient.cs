@@ -14,15 +14,23 @@ class WerewolfClient
 
     public static Objects.Game? currentGame;
 
-    public static IAudioClient? currentVoiceConnection;
-
     private string token;
 
     public WerewolfClient(string botToken)
     {
         token = botToken;
-        
-        client = new();
+
+        var config = new DiscordSocketConfig
+        {
+            LogLevel = LogSeverity.Debug,
+            GatewayIntents = GatewayIntents.Guilds |
+                     GatewayIntents.GuildMessages |
+                     GatewayIntents.MessageContent|
+                     GatewayIntents.GuildVoiceStates,
+            UseInteractionSnowflakeDate = false // This is needed for some god-unknown reason. Just breaks the bot being able to respond to interactions if not specified
+        };
+
+        client = new(config);
         interactionService = new InteractionService(client);
         services = new ServiceCollection()
             .BuildServiceProvider();

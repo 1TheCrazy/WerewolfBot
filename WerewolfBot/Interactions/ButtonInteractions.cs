@@ -22,11 +22,17 @@ public class ButtonInteractions: InteractionModuleBase<SocketInteractionContext>
     [ComponentInteraction("upload_current_game_settings")]
     public async Task HandleInfoButtonUpload()
     {
-        
+        await InteractionResolver.UploadSettingsPrompt(Context);
     }
 
     [ComponentInteraction("download_current_game_settings")]
     public async Task HandleInfoButtonDownload()
+    {
+        await InteractionResolver.DownloadSettings(Context);
+    }
+
+    [ComponentInteraction("join_current_game")]
+    public async Task HandleJoinButton()
     {
 
     }
