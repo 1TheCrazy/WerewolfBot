@@ -1,12 +1,6 @@
 ﻿using Discord.Audio;
 using Discord.Interactions;
-using Concentus.Structs; // Opus decoder
-using Concentus.Enums;
-using NAudio.Wave;
-using NAudio.CoreAudioApi;
-using System.Runtime.CompilerServices;
 using System.Diagnostics;
-using System.IO;
 
 namespace WerewolfBot.Interactions;
 
