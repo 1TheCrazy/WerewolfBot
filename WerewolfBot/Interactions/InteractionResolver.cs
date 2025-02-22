@@ -57,9 +57,6 @@ class InteractionResolver
         // Connect to the user's voice channel
         WerewolfClient.currentGame.currentVoiceConnection = await voiceChannel.ConnectAsync();
 
-        // Explicitly keep audio alive, since Discord disconnects the bot after ~15s of sedning no packages
-        //await WerewolfClient.currentGame.KeepAudioAlive();
-
         // Return to loose scope
         return;
     }

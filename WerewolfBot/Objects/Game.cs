@@ -80,18 +80,4 @@ class Game
         // Leave voice channel
         currentVoiceConnection.Dispose();
     }
-
-    // Keep the audio connection alive
-    public async Task KeepAudioAlive()
-    {
-        var connection = currentVoiceConnection.CreateDirectOpusStream();
-
-        byte[] silenceFrame = { 0xF8, 0xFF, 0xFE }; // 48kHz Opus silence frame
-
-        while (currentVoiceConnection.ConnectionState == ConnectionState.Connected)
-        {
-            await connection.WriteAsync(silenceFrame, 0, silenceFrame.Length); // Send silence
-            await Task.Delay(10000); // Delay for 10s, to not spam anything
-        }
-    }
 }
