@@ -34,11 +34,9 @@ class Player
     }
 
 
-
-    public Player(IGuildUser _discordUser, ICard _card)
+    public Player(IGuildUser _discordUser)
     {
         discordUser = _discordUser;
-        card = _card;
         isAlive = true;
     }
 }

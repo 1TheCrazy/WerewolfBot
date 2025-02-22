@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
 
 namespace WerewolfBot.Interactions;
 
@@ -28,5 +27,17 @@ public class CommandInteractions : InteractionModuleBase<SocketInteractionContex
     public async Task UploadSettings([Summary("json", "Upload a JSON file containing the settings to be used.")] IAttachment file)
     {
         await InteractionResolver.UploadSettingsCmd(Context, file);
+    }
+
+    [SlashCommand("join", "Joins the current game.")]
+    public async Task Join([Summary("json", "Upload a JSON file containing the settings to be used.")] IAttachment file)
+    {
+        await InteractionResolver.JoinGame(Context);
+    }
+
+    [SlashCommand("leave", "Leaves the current game.")]
+    public async Task Leave([Summary("json", "Upload a JSON file containing the settings to be used.")] IAttachment file)
+    {
+        await InteractionResolver.LeaveGame(Context);
     }
 }

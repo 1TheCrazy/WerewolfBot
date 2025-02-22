@@ -56,10 +56,16 @@ public class ButtonInteractions: InteractionModuleBase<SocketInteractionContext>
     {
         await InteractionResolver.DownloadSettings(Context);
     }
-
+    
     [ComponentInteraction("join_current_game")]
     public async Task HandleJoinButton()
     {
+        await InteractionResolver.JoinGame(Context);
+    }
 
+    [ComponentInteraction("leave_current_game")]
+    public async Task HandleLeaveButton()
+    {
+        await InteractionResolver.LeaveGame(Context);
     }
 }

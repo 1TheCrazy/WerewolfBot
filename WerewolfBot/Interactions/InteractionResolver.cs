@@ -2,12 +2,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using System;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Net.Mail;
 using System.Text;
-using System.Threading;
 using WerewolfBot.Objects;
 
 namespace WerewolfBot.Interactions;
@@ -16,11 +11,15 @@ class InteractionResolver
     public static async Task Abandone(SocketInteractionContext ctx)
     {
         if (WerewolfClient.currentGame is null)
-            await ctx.Interaction.RespondAsync($"There was no active Game to abandone in this server!");
+        {
+            await ctx.Interaction.RespondAsync($"There was no active Game to abandone in this server!", ephemeral: true);
+            return;
+        }   
 
-        WerewolfClient.currentGame?.Abandone(ctx.User);
+        WerewolfClient.currentGame.Abandone(ctx.User);
+        WerewolfClient.currentGame = null;
 
-        await ctx.Interaction.RespondAsync("✅ Abandoning the current Werewolf-Game!");
+        await ctx.Interaction.RespondAsync("❌ Abandoning the current Werewolf-Game!");
     }
 
     public static async Task CreateGame(SocketInteractionContext ctx)
@@ -44,6 +43,7 @@ class InteractionResolver
 
         var buttons = new ComponentBuilder()
             .WithButton(label: "🔗 Join", customId: "join_current_game", row: 0, style: ButtonStyle.Success)
+            .WithButton(label: "🔗 Leave", customId: "leave_current_game", row: 0, style: ButtonStyle.Danger)
             .WithButton(label: "Start", customId: "start_current_game", row: 1, style: ButtonStyle.Success)
             .WithButton(label: "Upload Settings ⚙️", customId: "upload_current_game_settings", row: 2)
             .WithButton(label: "Download Settings ⚙️", customId: "download_current_game_settings", row: 2)
@@ -58,7 +58,7 @@ class InteractionResolver
         WerewolfClient.currentGame.currentVoiceConnection = await voiceChannel.ConnectAsync();
 
         // Explicitly keep audio alive, since Discord disconnects the bot after ~15s of sedning no packages
-        await WerewolfClient.currentGame.KeepAudioAlive();
+        //await WerewolfClient.currentGame.KeepAudioAlive();
 
         // Return to loose scope
         return;
@@ -206,6 +206,46 @@ class InteractionResolver
 
     public static async Task JoinGame(SocketInteractionContext ctx)
     {
+        if (WerewolfClient.currentGame is null)
+        {
+            await ctx.Interaction.RespondAsync("❌ There is no game running to join.", ephemeral: true);
+            return;
+        }
 
+        IGuildUser? user = ctx.User as IGuildUser;
+
+        if(user is null)
+        {
+            await ctx.Interaction.RespondAsync("❌ Failed to join game...", ephemeral: true);
+            return;
+        }
+
+        Player playerToAdd = new Player(user);
+
+        WerewolfClient.currentGame.players.Add(playerToAdd);
+
+        await ctx.Interaction.RespondAsync($"✅ **{ctx.User.Username}** joined the game!");
+    }
+
+    public static async Task LeaveGame(SocketInteractionContext ctx)
+    {
+        if (WerewolfClient.currentGame is null)
+        {
+            await ctx.Interaction.RespondAsync("❌ There is no game running to leave.", ephemeral: true);
+            return;
+        }
+
+        IGuildUser? user = ctx.User as IGuildUser;
+
+        if (user is null)
+        {
+            await ctx.Interaction.RespondAsync("❌ Failed to leave game...", ephemeral: true);
+            return;
+        }
+
+        // Remove player from the current running game
+        WerewolfClient.currentGame.players.Remove(WerewolfClient.currentGame.players.Where(p => p.discordUser == user).First());
+
+        await ctx.Interaction.RespondAsync($"❌ **{ctx.User}** left the game!");
     }
 }

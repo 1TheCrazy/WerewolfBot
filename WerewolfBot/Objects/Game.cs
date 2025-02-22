@@ -55,6 +55,9 @@ class Game
     public Game()
     {
         settings = GameSettings.DefaultSettings;
+        players = new();
+        passedNights = new();
+        passedDays = new();
 
         isRunning = false;
     }
@@ -74,7 +77,8 @@ class Game
     /// </summary>
     public void Abandone(SocketUser user)
     {
-
+        // Leave voice channel
+        currentVoiceConnection.Dispose();
     }
 
     // Keep the audio connection alive
